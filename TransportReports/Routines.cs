@@ -12,6 +12,14 @@ namespace TransportReports
             return value;
         }
 
+        public static int? TryGetInt(Object obj)
+        {
+            int value;
+            if (!int.TryParse(obj.ToString(), out value))
+                return null;
+            return value;
+        }
+
         public static string GetString(Object obj)
         { 
             try

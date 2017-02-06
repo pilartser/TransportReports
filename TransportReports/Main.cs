@@ -33,26 +33,6 @@ namespace TransportReports
             _isEditorMode = "0".Equals(isEditorMode);
         }
 
-        private void CallActivePassCalc(Dictionary<string, DateTime> reportDate, string outReportName)
-        {
-            string templatePath = Path.Combine(Application.StartupPath, @"Template\ActivePass.xlsx");
-            string outputPath = Path.Combine(Application.StartupPath, outReportName);
-            if (DatabaseUtils.CallProcedure(_connection,
-                "cptt.pkg$trep_reports.fillReportActivePassExcel",
-                reportDate.Select(
-                    p => new OracleParameter {ParameterName = p.Key, OracleDbType = OracleDbType.Date, Value = p.Value})
-                    .ToArray()
-                ))
-            {
-                DataTable dt = DatabaseUtils.FillDataTable(_connection, Constants.ConstGetExcelReportRows);
-                ExcelUtils.OutloadExcel(templatePath, outputPath, dt);
-            }
-        }
-
-
-
-
-
         private void btnRun_Click(object sender, EventArgs e)
         {
             TryCalc(((ReportTreeNode) tvReports.SelectedNode).Type);
@@ -124,8 +104,9 @@ namespace TransportReports
                     procName,
                     parameters
                     )) return false;
-                DataTable dt = DatabaseUtils.FillDataTable(_connection, Constants.ConstGetExcelReportRows);
-                ExcelUtils.OutloadExcel(templatePath, outputPath, dt);
+                DataTable dtRows = DatabaseUtils.FillDataTable(_connection, Constants.ConstGetExcelReportRows);
+                DataTable dtFormat = DatabaseUtils.FillDataTable(_connection, Constants.ConstGetExcelReportFormat);
+                ExcelUtils.OutloadExcel(templatePath, outputPath, dtRows, dtFormat);
                 return true;
             }
             catch (Exception e)
