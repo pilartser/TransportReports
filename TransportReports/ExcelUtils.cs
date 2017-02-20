@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Data;
 using System.Drawing;
+using System.IO;
 using System.Text;
 using System.Windows.Forms;
 using Excel = Microsoft.Office.Interop.Excel;
@@ -29,14 +30,35 @@ namespace TransportReports
             return columnName.ToString();
         }
 
-        public static void OutloadExcel(string pathTemplate, string pathOutput, DataTable dtRows, DataTable dtFormat)
+        public static void OutloadExcel(string pathTemplate, string pathOutput, DataTable dtRows, DataTable dtFormat, bool isColorize, bool isOpenAfterCreate)
         {
             Excel.Application exApp = new Excel.Application();
             try
             {
                 exApp.Visible = false;
-                exApp.Workbooks.Open(pathTemplate);
+                //exApp.TemplatesPath = Path.GetDirectoryName(pathTemplate);
+                exApp.Workbooks.Add(pathTemplate);
                 Excel.Workbook exWorkBook = exApp.Workbooks[1];
+
+                foreach (DataRow row in dtFormat.Rows)
+                {
+                    int listNum = Routines.GetInt(row["list_num"]);
+                    if (listNum > exWorkBook.Sheets.Count)
+                    {
+                        MessageBox.Show($"Прерывание формирования excel. Лист с номером {listNum} отсутствует.");
+                    }
+                    Excel.Worksheet exSheet = (Excel.Worksheet)exWorkBook.Sheets.Item[listNum];
+                    string cellAddress = Routines.GetString(row["range"]);
+                    Excel.Range cells = exSheet.Range[cellAddress, Type.Missing];
+                    cells.Font.Name = "Arial";
+                    int? cellFontSize = Routines.TryGetInt(row["font_size"]);
+                    cells.Font.Size = cellFontSize ?? 8;
+                    int? cellBorderLineStyle = Routines.TryGetInt(row["border"]);
+                    if (cellBorderLineStyle != null) cells.Borders.LineStyle = cellBorderLineStyle;
+                    if ("Y".Equals(Routines.GetString(row["is_merged"])))
+                        cells.Merge();
+                }
+
                 foreach (DataRow row in dtRows.Rows)
                 {
                     int listNum = Routines.GetInt(row["list_num"]);
@@ -50,37 +72,27 @@ namespace TransportReports
                     string cellValue = Routines.GetString(row["value"]);
                     if ((cellValue.Length > 0) && (cellValue[0] == '='))
                     {
-                        cells.Interior.Color = Color.LightBlue;
+                        if (isColorize) cells.Interior.Color = Color.LightBlue;
                         cells.Formula = cellValue;
                     }
                     else
                     {
-                        cells.Interior.Color = Color.Yellow;
+                        if (isColorize) cells.Interior.Color = Color.Yellow;
                         cells.Value2 = cellValue;
                     }
-                    cells.Font.Name = "Arial";
-                    cells.Font.Size = 8;
                     cells.Rows.AutoFit();
                 }
 
-                foreach (DataRow row in dtFormat.Rows)
-                {
-                    int listNum = Routines.GetInt(row["list_num"]);
-                    if (listNum > exWorkBook.Sheets.Count)
-                    {
-                        MessageBox.Show($"Прерывание формирования excel. Лист с номером {listNum} отсутствует.");
-                    }
-                    Excel.Worksheet exSheet = (Excel.Worksheet)exWorkBook.Sheets.Item[listNum];
-                    string cellAddress = Routines.GetString(row["range"]);
-                    Excel.Range cells = exSheet.Range[cellAddress, Type.Missing];
-                    int? cellFontSize = Routines.TryGetInt(row["font_size"]);
-                    if (cellFontSize != null) cells.Font.Size = cellFontSize;
-                    int? cellBorderLineStyle = Routines.TryGetInt(row["border"]);
-                    if (cellBorderLineStyle != null) cells.Borders.LineStyle = cellBorderLineStyle;
-                }
+
                 exWorkBook.SaveAs(pathOutput);
-                exApp.Visible = true;
-                //exApp.Quit();
+                exApp.Quit();
+                if (isOpenAfterCreate)
+                {
+                    Excel.Application createdExcel = new Excel.Application();
+                    createdExcel.Visible = false;
+                    createdExcel.Workbooks.Open(pathOutput);
+                    createdExcel.Visible = true;
+                }
             }
             catch (Exception e)
             {

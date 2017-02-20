@@ -8,6 +8,7 @@ namespace TransportReports
     enum ReportType
     {
         ActivePass,
+        ActivePassRegional,
         Privilege,
         Route,
         Organisation,
