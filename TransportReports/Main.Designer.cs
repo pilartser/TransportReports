@@ -59,6 +59,10 @@
             this.tpRoute = new System.Windows.Forms.TabPage();
             this.tpTerminal = new System.Windows.Forms.TabPage();
             this.tpEmpty = new System.Windows.Forms.TabPage();
+            this.ssUserInfo = new System.Windows.Forms.StatusStrip();
+            this.tsslUserInfoText = new System.Windows.Forms.ToolStripStatusLabel();
+            this.pnlButtons = new System.Windows.Forms.Panel();
+            this.btnSetAgents = new System.Windows.Forms.Button();
             ((System.ComponentModel.ISupportInitialize)(this.scReportListReportParam)).BeginInit();
             this.scReportListReportParam.Panel1.SuspendLayout();
             this.scReportListReportParam.Panel2.SuspendLayout();
@@ -73,14 +77,16 @@
             this.gbActivePassPass.SuspendLayout();
             this.tpPass.SuspendLayout();
             this.gbPass.SuspendLayout();
+            this.ssUserInfo.SuspendLayout();
+            this.pnlButtons.SuspendLayout();
             this.SuspendLayout();
             // 
             // btnRun
             // 
-            this.btnRun.Dock = System.Windows.Forms.DockStyle.Bottom;
-            this.btnRun.Location = new System.Drawing.Point(0, 57);
+            this.btnRun.Dock = System.Windows.Forms.DockStyle.Fill;
+            this.btnRun.Location = new System.Drawing.Point(178, 0);
             this.btnRun.Name = "btnRun";
-            this.btnRun.Size = new System.Drawing.Size(497, 23);
+            this.btnRun.Size = new System.Drawing.Size(319, 26);
             this.btnRun.TabIndex = 0;
             this.btnRun.Text = "Сформировать";
             this.btnRun.UseVisualStyleBackColor = true;
@@ -98,8 +104,9 @@
             // 
             // scReportListReportParam.Panel2
             // 
+            this.scReportListReportParam.Panel2.BackgroundImageLayout = System.Windows.Forms.ImageLayout.None;
             this.scReportListReportParam.Panel2.Controls.Add(this.tcReportParams);
-            this.scReportListReportParam.Size = new System.Drawing.Size(873, 404);
+            this.scReportListReportParam.Size = new System.Drawing.Size(873, 382);
             this.scReportListReportParam.SplitterDistance = 497;
             this.scReportListReportParam.TabIndex = 3;
             this.scReportListReportParam.TabStop = false;
@@ -119,19 +126,20 @@
             // 
             this.scReportListRunParam.Panel2.Controls.Add(this.chbOpenExcelReport);
             this.scReportListRunParam.Panel2.Controls.Add(this.chbColorizeExcelReport);
-            this.scReportListRunParam.Panel2.Controls.Add(this.btnRun);
-            this.scReportListRunParam.Size = new System.Drawing.Size(497, 404);
-            this.scReportListRunParam.SplitterDistance = 320;
+            this.scReportListRunParam.Panel2.Controls.Add(this.pnlButtons);
+            this.scReportListRunParam.Size = new System.Drawing.Size(497, 382);
+            this.scReportListRunParam.SplitterDistance = 270;
             this.scReportListRunParam.TabIndex = 4;
             // 
             // tvReports
             // 
             this.tvReports.BackColor = System.Drawing.SystemColors.Control;
+            this.tvReports.BorderStyle = System.Windows.Forms.BorderStyle.None;
             this.tvReports.Dock = System.Windows.Forms.DockStyle.Fill;
             this.tvReports.DrawMode = System.Windows.Forms.TreeViewDrawMode.OwnerDrawText;
             this.tvReports.Location = new System.Drawing.Point(0, 0);
             this.tvReports.Name = "tvReports";
-            this.tvReports.Size = new System.Drawing.Size(497, 320);
+            this.tvReports.Size = new System.Drawing.Size(497, 270);
             this.tvReports.TabIndex = 3;
             this.tvReports.DrawNode += new System.Windows.Forms.DrawTreeNodeEventHandler(this.tvReports_DrawNode);
             this.tvReports.AfterSelect += new System.Windows.Forms.TreeViewEventHandler(this.tvReports_AfterSelect);
@@ -139,8 +147,6 @@
             // chbOpenExcelReport
             // 
             this.chbOpenExcelReport.AutoSize = true;
-            this.chbOpenExcelReport.Checked = true;
-            this.chbOpenExcelReport.CheckState = System.Windows.Forms.CheckState.Checked;
             this.chbOpenExcelReport.Location = new System.Drawing.Point(12, 34);
             this.chbOpenExcelReport.Name = "chbOpenExcelReport";
             this.chbOpenExcelReport.Size = new System.Drawing.Size(224, 17);
@@ -162,6 +168,7 @@
             // 
             // tcReportParams
             // 
+            this.tcReportParams.Appearance = System.Windows.Forms.TabAppearance.FlatButtons;
             this.tcReportParams.Controls.Add(this.tpActivePass);
             this.tcReportParams.Controls.Add(this.tpPrivilege);
             this.tcReportParams.Controls.Add(this.tpTransportVehicle);
@@ -178,21 +185,21 @@
             this.tcReportParams.Name = "tcReportParams";
             this.tcReportParams.Padding = new System.Drawing.Point(1, 1);
             this.tcReportParams.SelectedIndex = 0;
-            this.tcReportParams.Size = new System.Drawing.Size(372, 404);
+            this.tcReportParams.Size = new System.Drawing.Size(372, 382);
             this.tcReportParams.SizeMode = System.Windows.Forms.TabSizeMode.Fixed;
             this.tcReportParams.TabIndex = 3;
             this.tcReportParams.TabStop = false;
             // 
             // tpActivePass
             // 
+            this.tpActivePass.BackColor = System.Drawing.SystemColors.Control;
             this.tpActivePass.Controls.Add(this.gbActivePassActivation);
             this.tpActivePass.Controls.Add(this.gbActivePassPass);
             this.tpActivePass.Location = new System.Drawing.Point(4, 5);
             this.tpActivePass.Name = "tpActivePass";
             this.tpActivePass.Padding = new System.Windows.Forms.Padding(3);
-            this.tpActivePass.Size = new System.Drawing.Size(364, 395);
+            this.tpActivePass.Size = new System.Drawing.Size(364, 373);
             this.tpActivePass.TabIndex = 0;
-            this.tpActivePass.UseVisualStyleBackColor = true;
             // 
             // gbActivePassActivation
             // 
@@ -299,7 +306,7 @@
             this.tpPrivilege.Location = new System.Drawing.Point(4, 5);
             this.tpPrivilege.Name = "tpPrivilege";
             this.tpPrivilege.Padding = new System.Windows.Forms.Padding(3);
-            this.tpPrivilege.Size = new System.Drawing.Size(364, 395);
+            this.tpPrivilege.Size = new System.Drawing.Size(364, 373);
             this.tpPrivilege.TabIndex = 1;
             this.tpPrivilege.UseVisualStyleBackColor = true;
             // 
@@ -308,7 +315,7 @@
             this.tpTransportVehicle.Location = new System.Drawing.Point(4, 5);
             this.tpTransportVehicle.Name = "tpTransportVehicle";
             this.tpTransportVehicle.Padding = new System.Windows.Forms.Padding(3);
-            this.tpTransportVehicle.Size = new System.Drawing.Size(364, 395);
+            this.tpTransportVehicle.Size = new System.Drawing.Size(364, 373);
             this.tpTransportVehicle.TabIndex = 2;
             this.tpTransportVehicle.UseVisualStyleBackColor = true;
             // 
@@ -317,7 +324,7 @@
             this.tpTransportCard.Location = new System.Drawing.Point(4, 5);
             this.tpTransportCard.Name = "tpTransportCard";
             this.tpTransportCard.Padding = new System.Windows.Forms.Padding(3);
-            this.tpTransportCard.Size = new System.Drawing.Size(364, 395);
+            this.tpTransportCard.Size = new System.Drawing.Size(364, 373);
             this.tpTransportCard.TabIndex = 3;
             this.tpTransportCard.UseVisualStyleBackColor = true;
             // 
@@ -327,7 +334,7 @@
             this.tpPass.Location = new System.Drawing.Point(4, 5);
             this.tpPass.Name = "tpPass";
             this.tpPass.Padding = new System.Windows.Forms.Padding(3);
-            this.tpPass.Size = new System.Drawing.Size(364, 395);
+            this.tpPass.Size = new System.Drawing.Size(364, 373);
             this.tpPass.TabIndex = 4;
             this.tpPass.UseVisualStyleBackColor = true;
             // 
@@ -386,7 +393,7 @@
             this.tpOrganisation.Location = new System.Drawing.Point(4, 5);
             this.tpOrganisation.Name = "tpOrganisation";
             this.tpOrganisation.Padding = new System.Windows.Forms.Padding(3);
-            this.tpOrganisation.Size = new System.Drawing.Size(364, 395);
+            this.tpOrganisation.Size = new System.Drawing.Size(364, 373);
             this.tpOrganisation.TabIndex = 5;
             this.tpOrganisation.UseVisualStyleBackColor = true;
             // 
@@ -395,7 +402,7 @@
             this.tpRoute.Location = new System.Drawing.Point(4, 5);
             this.tpRoute.Name = "tpRoute";
             this.tpRoute.Padding = new System.Windows.Forms.Padding(3);
-            this.tpRoute.Size = new System.Drawing.Size(364, 395);
+            this.tpRoute.Size = new System.Drawing.Size(364, 373);
             this.tpRoute.TabIndex = 6;
             this.tpRoute.UseVisualStyleBackColor = true;
             // 
@@ -404,7 +411,7 @@
             this.tpTerminal.Location = new System.Drawing.Point(4, 5);
             this.tpTerminal.Name = "tpTerminal";
             this.tpTerminal.Padding = new System.Windows.Forms.Padding(3);
-            this.tpTerminal.Size = new System.Drawing.Size(364, 395);
+            this.tpTerminal.Size = new System.Drawing.Size(364, 373);
             this.tpTerminal.TabIndex = 7;
             this.tpTerminal.UseVisualStyleBackColor = true;
             // 
@@ -413,9 +420,49 @@
             this.tpEmpty.Location = new System.Drawing.Point(4, 5);
             this.tpEmpty.Name = "tpEmpty";
             this.tpEmpty.Padding = new System.Windows.Forms.Padding(3);
-            this.tpEmpty.Size = new System.Drawing.Size(364, 395);
+            this.tpEmpty.Size = new System.Drawing.Size(364, 373);
             this.tpEmpty.TabIndex = 8;
             this.tpEmpty.UseVisualStyleBackColor = true;
+            // 
+            // ssUserInfo
+            // 
+            this.ssUserInfo.BackColor = System.Drawing.SystemColors.Control;
+            this.ssUserInfo.BackgroundImageLayout = System.Windows.Forms.ImageLayout.None;
+            this.ssUserInfo.Items.AddRange(new System.Windows.Forms.ToolStripItem[] {
+            this.tsslUserInfoText});
+            this.ssUserInfo.Location = new System.Drawing.Point(0, 382);
+            this.ssUserInfo.Name = "ssUserInfo";
+            this.ssUserInfo.RenderMode = System.Windows.Forms.ToolStripRenderMode.ManagerRenderMode;
+            this.ssUserInfo.Size = new System.Drawing.Size(873, 22);
+            this.ssUserInfo.SizingGrip = false;
+            this.ssUserInfo.Stretch = false;
+            this.ssUserInfo.TabIndex = 3;
+            // 
+            // tsslUserInfoText
+            // 
+            this.tsslUserInfoText.Name = "tsslUserInfoText";
+            this.tsslUserInfoText.Size = new System.Drawing.Size(0, 17);
+            // 
+            // pnlButtons
+            // 
+            this.pnlButtons.Controls.Add(this.btnRun);
+            this.pnlButtons.Controls.Add(this.btnSetAgents);
+            this.pnlButtons.Dock = System.Windows.Forms.DockStyle.Bottom;
+            this.pnlButtons.Location = new System.Drawing.Point(0, 82);
+            this.pnlButtons.Name = "pnlButtons";
+            this.pnlButtons.Size = new System.Drawing.Size(497, 26);
+            this.pnlButtons.TabIndex = 3;
+            // 
+            // btnSetAgents
+            // 
+            this.btnSetAgents.Dock = System.Windows.Forms.DockStyle.Left;
+            this.btnSetAgents.Location = new System.Drawing.Point(0, 0);
+            this.btnSetAgents.Name = "btnSetAgents";
+            this.btnSetAgents.Size = new System.Drawing.Size(178, 26);
+            this.btnSetAgents.TabIndex = 1;
+            this.btnSetAgents.Text = "Заблокировать агентов";
+            this.btnSetAgents.UseVisualStyleBackColor = true;
+            this.btnSetAgents.Click += new System.EventHandler(this.btnSetAgents_Click);
             // 
             // Main
             // 
@@ -423,6 +470,7 @@
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.ClientSize = new System.Drawing.Size(873, 404);
             this.Controls.Add(this.scReportListReportParam);
+            this.Controls.Add(this.ssUserInfo);
             this.FormBorderStyle = System.Windows.Forms.FormBorderStyle.FixedSingle;
             this.MaximizeBox = false;
             this.Name = "Main";
@@ -447,7 +495,11 @@
             this.tpPass.ResumeLayout(false);
             this.gbPass.ResumeLayout(false);
             this.gbPass.PerformLayout();
+            this.ssUserInfo.ResumeLayout(false);
+            this.ssUserInfo.PerformLayout();
+            this.pnlButtons.ResumeLayout(false);
             this.ResumeLayout(false);
+            this.PerformLayout();
 
         }
 
@@ -484,5 +536,9 @@
         private System.Windows.Forms.SplitContainer scReportListRunParam;
         private System.Windows.Forms.CheckBox chbOpenExcelReport;
         private System.Windows.Forms.CheckBox chbColorizeExcelReport;
+        private System.Windows.Forms.StatusStrip ssUserInfo;
+        private System.Windows.Forms.ToolStripStatusLabel tsslUserInfoText;
+        private System.Windows.Forms.Panel pnlButtons;
+        private System.Windows.Forms.Button btnSetAgents;
     }
 }

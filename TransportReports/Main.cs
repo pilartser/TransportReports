@@ -1,11 +1,9 @@
 ﻿using System;
-using System.Collections.Generic;
 using System.Data;
 using System.Drawing;
 using System.IO;
 using System.Linq;
 using System.Threading;
-using System.Threading.Tasks;
 using System.Windows.Forms;
 using Oracle.DataAccess.Client;
 
@@ -13,13 +11,23 @@ namespace TransportReports
 {
     public partial class Main : Form
     {
-        private string _database;
-        private string _login;
-        private string _password;
-        private int _threadCount = 0;
-        private int _threadNum = 0;
+        private readonly string _database;
+        private readonly string _login;
+        private readonly string _password;
+        private int _threadActiveCount;
+        private int _threadFullCount;
+        private int _threadFinishedCount;
+        private DateTime _timeCalcBegin;
+        private DateTime _timeOutputBegin;
         private bool _isEditorMode;
         private readonly OracleConnection _connection;
+        private bool Lock {
+            set
+            {
+                //btnRun.Enabled = value;
+                Invoke((MethodInvoker) delegate { scReportListReportParam.Enabled = !value; });
+            }
+        }
 
         public Main(string database, string login, string password)
         {
@@ -37,30 +45,77 @@ namespace TransportReports
             _isEditorMode = "0".Equals(isEditorMode);
         }
 
+        private void SetStatusText(string text)
+        {
+            if (InvokeRequired)
+                Invoke((MethodInvoker)delegate { tsslUserInfoText.Text = text; });
+            else
+            {
+                tsslUserInfoText.Text = text;
+            }
+        }
+
+        private void UpdateStatusProgressText()
+        {
+            SetStatusText($"Выгружено {_threadFinishedCount}/{_threadFullCount}. " +
+                          $"Прошло {(DateTime.Now - _timeOutputBegin).ToString(@"dd\.hh\:mm\:ss")}. " +
+                          $"Выгрузка еще не завершена.");
+        }
+
+        private void ClearThreadVars()
+        {
+            _threadActiveCount = 0;
+            _threadFullCount = 0;
+            _threadFinishedCount = 0;
+        }
+
         private void btnRun_Click(object sender, EventArgs e)
         {
-            ReportType type = ((ReportTreeNode) tvReports.SelectedNode).Type;
-            if (CalcData(type))
+            Calc(((ReportTreeNode)tvReports.SelectedNode).Type);
+        }
+
+        private void Main_Load(object sender, EventArgs e)
+        {
+            Text += $" ({Application.ProductVersion})";
+            SetDefaultValues();
+            ReportUtils.LoadReportList(tvReports);
+        }
+
+        private void Calc(ReportType type)
+        {
+            var tCalc = new Thread(() =>
             {
-                if (type == ReportType.Route)
+                Lock = true;
+                lock (this)
                 {
-                    OracleDataReader reader = DatabaseUtils.GetReader(_connection, Constants.ConstGetRouteList);
+                    _timeCalcBegin = DateTime.Now;
+                }
+                if (!CalcData(type)) return;
+                SetStatusText("Идет подготовка к выгрузке файлов.");
+                
+                if (new [] {ReportType.Route, ReportType.Terminal}.Contains(type))
+                {
+                    var query = ReportUtils.GetReaderQuery(type);
+                    var reader = DatabaseUtils.GetReader(_connection, query);
                     if ((reader == null) || (!reader.HasRows)) return;
-                    DateTime timeBegin = DateTime.Now;
+                    _timeOutputBegin = DateTime.Now;
+                    ClearThreadVars();
+
                     while (reader.Read())
                     {
-                        long id = Routines.GetLong(reader["id_element"]);
-                        string name = Routines.GetString(reader["name_element"]);
-                        Thread t = new Thread(() =>
+                        var id = Routines.GetLong(reader["id_element"]);
+                        var name = Routines.GetString(reader["name_element"]);
+                        var t = new Thread(() =>
                         {
                             while (true)
                             {
                                 lock (this)
                                 {
-                                    if (_threadCount < 4)
+                                    if (_threadActiveCount < 8)
                                     {
-                                        _threadCount++;
-                                        _threadNum++;
+                                        _threadActiveCount++;
+                                        _threadFullCount++;
+                                        UpdateStatusProgressText();
                                         break;
                                     }
                                 }
@@ -69,40 +124,47 @@ namespace TransportReports
                             CalcOutput(type, id, name);
                             lock (this)
                             {
-                                _threadCount--;
+                                _threadActiveCount--;
+                                _threadFinishedCount++;
+                                UpdateStatusProgressText();
                             }
-                            if (_threadCount == 0)
-                                MessageBox.Show($"Выгрузилось {_threadNum} отчетов за {(DateTime.Now-timeBegin).ToString(@"dd\.hh\:mm\:ss")}!");
-                        });
-                        t.IsBackground = true;
+                            if (_threadActiveCount != 0) return;
+                            //Если это последний поток
+                            Lock = false;
+                            MessageBox.Show(
+                                $"Выгрузилось {_threadFullCount} отчетов за {(DateTime.Now - _timeCalcBegin).ToString(@"dd\.hh\:mm\:ss")}!");
+                            SetStatusText("");
+                        }) {IsBackground = true};
                         t.Start();
                     }
                 }
                 else
                 {
                     CalcOutput(type);
+                    Lock = false;
+                    MessageBox.Show(
+                        $"Выгрузился за {(DateTime.Now - _timeCalcBegin).ToString(@"dd\.hh\:mm\:ss")}!");
+                    SetStatusText("");
                 }
-            }
-        }
-
-        private void Main_Load(object sender, EventArgs e)
-        {
-            this.Text += $" ({Application.ProductVersion})";
-            SetDefaultValues();
-            ReportUtils.LoadReportList(tvReports);
+            });
+            tCalc.Start();
         }
 
         private bool CalcData(ReportType type)
         {
+            SetStatusText("Идет расчет предварительных данных");
             switch (type)
             {
                 case ReportType.Route:
                     return DatabaseUtils.CallProcedure(_connection, "cptt.pkg$trep_reports.fillpassroutetermday", GetOracleParameters(type));
+                case ReportType.Terminal:
+                    return DatabaseUtils.CallProcedure(_connection, "cptt.pkg$trep_reports.filldataterminal",
+                        GetOracleParameters(type));
                 case ReportType.ActivePass:
                 case ReportType.ActivePassRegional:
                 case ReportType.Privilege:
                 case ReportType.Organisation:
-                case ReportType.Terminal:
+                
                 case ReportType.Transaction:
                 case ReportType.TransportCard:
                 case ReportType.TransportVehicle:
@@ -164,8 +226,20 @@ namespace TransportReports
                             }
                         }.Concat(GetOracleParameters(type)).ToArray();
                         break;
-                    case ReportType.Organisation:
                     case ReportType.Terminal:
+                        templateName = "Terminal.xltx";
+                        outputName = $@"Отчет по терминалу кондуктора_{nameElement}_{dtPassPassBeginDate.Value.ToString("ddMMyyyy")}_{dtPassPassEndDate.Value.ToString("ddMMyyyy")}_{DateTime.Now.ToString("ddMMyyyyHHmmss")}.xlsx";
+                        outputProcName = "cptt.pkg$trep_reports.fillReportTerminalExcel";
+                        parameters = new[]
+                        {
+                            new OracleParameter()
+                            {
+                                ParameterName = "pIdTerminal", OracleDbType = OracleDbType.Int64, Value = idElement
+                            } 
+                        }.Concat(GetOracleParameters(type)).ToArray();
+                        break;
+                    case ReportType.Organisation:
+                    
 
                     case ReportType.TransportCard:
                     case ReportType.TransportVehicle:
@@ -186,7 +260,7 @@ namespace TransportReports
                 if (!DatabaseUtils.CallProcedure(conn, outputProcName, parameters)) return false;
                 DataTable dtRows = DatabaseUtils.FillDataTable(conn, Constants.ConstGetExcelReportRows);
                 DataTable dtFormat = DatabaseUtils.FillDataTable(conn, Constants.ConstGetExcelReportFormat);
-                ExcelUtils.OutloadExcel(templatePath, outputPath, dtRows, dtFormat, isColorize, isOpenAfterCreate);
+                ExcelUtils.OutloadExcelEpplus(templatePath, outputPath, dtRows, dtFormat, isColorize, isOpenAfterCreate);
                 conn.Close();
                 return true;
             }
@@ -201,6 +275,16 @@ namespace TransportReports
         private void SetDefaultValues()
         {
             //Отчет инвестора-оператора
+            dtActivePassActivationBeginDate.Value = new DateTime(DateTime.Now.AddMonths(-2).Year, DateTime.Now.AddMonths(-2).Month, 16);
+            
+            dtActivePassActivationEndDate.Value = new DateTime(DateTime.Now.AddMonths(-1).Year, DateTime.Now.AddMonths(-1).Month, 15);
+            dtActivePassPassBeginDate.Value = new DateTime(DateTime.Now.AddMonths(-1).Year, DateTime.Now.AddMonths(-1).Month, 1, 3, 0, 0);
+            dtActivePassPassEndDate.Value = new DateTime(DateTime.Now.Year, DateTime.Now.Month, 1, 3, 0, 0);
+            //отчет по транзакциям
+            dtPassPassBeginDate.Value = new DateTime(DateTime.Now.AddMonths(-1).Year, DateTime.Now.AddMonths(-1).Month, 1, 3, 0, 0);
+            dtPassPassEndDate.Value = new DateTime(DateTime.Now.Year, DateTime.Now.Month, 1, 3, 0, 0);
+            /*
+            //Отчет инвестора-оператора
             dtActivePassActivationBeginDate.Value = new DateTime(2016, 11, 13);
             dtActivePassActivationEndDate.Value = new DateTime(2016, 12, 12);
             dtActivePassPassBeginDate.Value = new DateTime(2016, 12, 1, 3, 0, 0);
@@ -208,6 +292,7 @@ namespace TransportReports
             //отчет по транзакциям
             dtPassPassBeginDate.Value = new DateTime(2016, 12, 1, 3, 0, 0);
             dtPassPassEndDate.Value = new DateTime(2017, 1, 1, 3, 0, 0);
+            */
         }
 
         private void ShowTab(ReportType type)
@@ -224,8 +309,10 @@ namespace TransportReports
                 case ReportType.Route:
                     tp = tpPass;
                     break;
-                case ReportType.Organisation:
                 case ReportType.Terminal:
+                    tp = tpPass;
+                    break;
+                case ReportType.Organisation:
                 case ReportType.TransportCard:
                 case ReportType.TransportVehicle:
                 case ReportType.None:
@@ -287,25 +374,30 @@ namespace TransportReports
                     };
                 case ReportType.Route:
                 case ReportType.Transaction:
+                case ReportType.Terminal:
                     return new[]
                     {
                         new OracleParameter
                         {
-                            ParameterName = "pPassBeginDate", OracleDbType = OracleDbType.Date, Value = dtActivePassPassBeginDate.Value
+                            ParameterName = "pPassBeginDate", OracleDbType = OracleDbType.Date, Value = dtPassPassBeginDate.Value
                         },
                         new OracleParameter
                         {
-                            ParameterName = "pPassEndDate", OracleDbType = OracleDbType.Date, Value = dtActivePassPassEndDate.Value
+                            ParameterName = "pPassEndDate", OracleDbType = OracleDbType.Date, Value = dtPassPassEndDate.Value
                         },
                     };
                 case ReportType.Organisation:
-                case ReportType.Terminal:
                 case ReportType.TransportCard:
                 case ReportType.TransportVehicle:
                 case ReportType.None:
                 default:
                     return new OracleParameter[] {};
             }
+        }
+
+        private void btnSetAgents_Click(object sender, EventArgs e)
+        {
+            new LockedAgents(_connection).ShowDialog(this);
         }
     }
 }

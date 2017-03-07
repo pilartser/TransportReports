@@ -36,6 +36,10 @@
     <Prefer32Bit>false</Prefer32Bit>
   </PropertyGroup>
   <ItemGroup>
+    <Reference Include="EPPlus, Version=4.1.0.0, Culture=neutral, PublicKeyToken=ea159fdaa78159a1, processorArchitecture=MSIL">
+      <SpecificVersion>False</SpecificVersion>
+      <HintPath>bin\Debug\EPPlus.dll</HintPath>
+    </Reference>
     <Reference Include="Oracle.DataAccess, Version=2.112.1.0, Culture=neutral, PublicKeyToken=89b483f429c47342, processorArchitecture=x86">
       <SpecificVersion>False</SpecificVersion>
       <HintPath>..\..\..\..\Oracle\pilartser\product\11.2.0\client_1\ODP.NET\bin\2.x\Oracle.DataAccess.dll</HintPath>
@@ -56,6 +60,12 @@
     <Compile Include="Constants.cs" />
     <Compile Include="DatabaseUtils.cs" />
     <Compile Include="ExcelUtils.cs" />
+    <Compile Include="LockedAgents.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="LockedAgents.Designer.cs">
+      <DependentUpon>LockedAgents.cs</DependentUpon>
+    </Compile>
     <Compile Include="Main.cs">
       <SubType>Form</SubType>
     </Compile>
@@ -68,6 +78,9 @@
     <Compile Include="ReportUtils.cs" />
     <Compile Include="Routines.cs" />
     <Compile Include="ReportType.cs" />
+    <EmbeddedResource Include="LockedAgents.resx">
+      <DependentUpon>LockedAgents.cs</DependentUpon>
+    </EmbeddedResource>
     <EmbeddedResource Include="Main.resx">
       <DependentUpon>Main.cs</DependentUpon>
     </EmbeddedResource>
