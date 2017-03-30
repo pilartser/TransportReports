@@ -12,13 +12,14 @@ namespace TransportReports
             {
                 new ReportTreeNode("Отчет по Инвестора-Оператора", ReportType.ActivePass, Color.DarkGreen),
                 new ReportTreeNode("Отчет по Инвестора-Оператора (развернутые региональные льготники)", ReportType.ActivePassRegional, Color.DarkGreen),
+                new ReportTreeNode("Отчет по активации проездных агентами", ReportType.ActiveAgents, Color.DarkGreen), 
                 new ReportTreeNode("Отчет по льготникам", ReportType.Privilege, Color.DarkGreen),
                 new ReportTreeNode("Отчет по маршруту", ReportType.Route, Color.DarkGreen),
                 new ReportTreeNode("Отчет по организации", ReportType.Organisation, Color.DarkRed),
                 new ReportTreeNode("Отчет по терминалу кондуктора", ReportType.Terminal, Color.DarkGreen),
                 new ReportTreeNode("Отчет по транзакциям", ReportType.Transaction, Color.DarkGreen),
                 new ReportTreeNode("Отчет по транспортной карте", ReportType.TransportCard, Color.DarkRed),
-                new ReportTreeNode("Отчет по транспортному средству", ReportType.TransportVehicle, Color.DarkRed)
+                new ReportTreeNode("Отчет по транспортному средству", ReportType.TransportVehicle, Color.DarkGreen)
             });
             root.Expand();
             tv.Nodes.Add(root);
@@ -34,6 +35,8 @@ namespace TransportReports
                     return Constants.ConstGetRouteList;
                 case ReportType.Terminal:
                     return Constants.ConstGetTermList;
+                case ReportType.TransportVehicle:
+                    return Constants.ConstGetTransportVehicleList;
                 default:
                     return "";
             }

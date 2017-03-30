@@ -42,6 +42,21 @@ namespace TransportReports
             --AND trm.id = 25300246845
             ORDER BY trm.id";
 
+        public static readonly string ConstGetTransportVehicleList =
+            @"SELECT v.id AS id_element,
+                   REPLACE(op.name, ' ', '_') || '_' || v.code AS name_element
+            FROM cptt.vehicle  v,
+                 cptt.division div,
+                 cptt.operator op
+            WHERE v.id_division = div.id
+            AND div.id_operator = op.id
+            AND op.id NOT IN (SELECT id FROM cptt.ref$trep_agents_locked)
+            AND op.role = 1
+                 --AND v.id = 139700246845
+            AND v.code NOT IN (':')
+            AND EXISTS
+             (SELECT 1 FROM cptt.tmp$trep_data td WHERE td.id_vehicle = v.id)";
+
         public static string ConstGetLockedAgentsList =
             @"SELECT op.id,
                    NAME,

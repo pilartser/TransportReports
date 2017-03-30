@@ -1,5 +1,8 @@
 ﻿using System;
+using System.Collections;
+using System.Linq;
 using System.Windows.Forms;
+using System.Windows.Forms.VisualStyles;
 
 namespace TransportReports
 {
@@ -9,10 +12,11 @@ namespace TransportReports
         /// Главная точка входа для приложения.
         /// </summary>
         [STAThread]
-        static void Main(string[] args)
+        private static void Main(string[] args)
         {
             //Application.EnableVisualStyles();
             //Application.SetCompatibleTextRenderingDefault(false);
+            
             if (args.Length == 3)
             {
                 Application.Run(new Main(args[0], args[1], args[2]));

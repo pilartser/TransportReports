@@ -3,6 +3,7 @@
     enum ReportType
     {
         ActivePass,
+        ActiveAgents,
         ActivePassRegional,
         Privilege,
         Route,

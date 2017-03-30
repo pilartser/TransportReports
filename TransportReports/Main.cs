@@ -93,7 +93,7 @@ namespace TransportReports
                 if (!CalcData(type)) return;
                 SetStatusText("Идет подготовка к выгрузке файлов.");
                 
-                if (new [] {ReportType.Route, ReportType.Terminal}.Contains(type))
+                if (new [] {ReportType.Route, ReportType.Terminal, ReportType.TransportVehicle}.Contains(type))
                 {
                     var query = ReportUtils.GetReaderQuery(type);
                     var reader = DatabaseUtils.GetReader(_connection, query);
@@ -111,7 +111,7 @@ namespace TransportReports
                             {
                                 lock (this)
                                 {
-                                    if (_threadActiveCount < 8)
+                                    if (_threadActiveCount < ((type == ReportType.TransportVehicle) ? 4 : 8))
                                     {
                                         _threadActiveCount++;
                                         _threadFullCount++;
@@ -158,8 +158,26 @@ namespace TransportReports
                 case ReportType.Route:
                     return DatabaseUtils.CallProcedure(_connection, "cptt.pkg$trep_reports.fillpassroutetermday", GetOracleParameters(type));
                 case ReportType.Terminal:
-                    return DatabaseUtils.CallProcedure(_connection, "cptt.pkg$trep_reports.filldataterminal",
+                case ReportType.TransportVehicle:
+                    return DatabaseUtils.CallProcedure(_connection, "cptt.pkg$trep_reports.filldata",
                         GetOracleParameters(type));
+                case ReportType.ActiveAgents:
+                    return DatabaseUtils.CallProcedure(_connection, "cptt.pkg$trep_reports.fillactivationseries",
+                        new[]
+                        {
+                            new OracleParameter
+                            {
+                                ParameterName = "pActivationBeginDate",
+                                OracleDbType = OracleDbType.Date,
+                                Value = dtActivePassActivationBeginDate.Value
+                            },
+                            new OracleParameter
+                            {
+                                ParameterName = "pActivationEndDate",
+                                OracleDbType = OracleDbType.Date,
+                                Value = dtActivePassActivationEndDate.Value
+                            }
+                        });
                 case ReportType.ActivePass:
                 case ReportType.ActivePassRegional:
                 case ReportType.Privilege:
@@ -167,7 +185,7 @@ namespace TransportReports
                 
                 case ReportType.Transaction:
                 case ReportType.TransportCard:
-                case ReportType.TransportVehicle:
+                
                 case ReportType.None:
                 default:
                     return true;
@@ -197,8 +215,13 @@ namespace TransportReports
                     case ReportType.ActivePassRegional:
                         templateName = "ActivePass.xlsx";
                         outputName = $@"Отчет инвеcтора-оператора(развернутые региональные льготники)_{dtActivePassPassBeginDate.Value.ToString("ddMMyyyy")}_{dtActivePassPassEndDate.Value.ToString("ddMMyyyy")}_{DateTime.Now.ToString("ddMMyyyyHHmmss")}.xlsx";
-
                         outputProcName = "cptt.pkg$trep_reports.fillReportActivePassExcel";
+                        parameters = GetOracleParameters(type);
+                        break;
+                    case ReportType.ActiveAgents:
+                        templateName = "ActiveAgents.xltx";
+                        outputName = $@"Отчет по активации проездных агентами_{dtActivePassActivationBeginDate.Value.ToString("ddMMyyyy")}_{dtActivePassActivationEndDate.Value.ToString("ddMMyyyy")}_{DateTime.Now.ToString("ddMMyyyyHHmmss")}.xlsx";
+                        outputProcName = "cptt.pkg$trep_reports.fillReportActiveAgents";
                         parameters = GetOracleParameters(type);
                         break;
                     case ReportType.Transaction:
@@ -238,11 +261,23 @@ namespace TransportReports
                             } 
                         }.Concat(GetOracleParameters(type)).ToArray();
                         break;
+                    case ReportType.TransportVehicle:
+                        templateName = "TransportVehicle.xltx";
+                        outputName = $@"Отчет по транспортному средству_{nameElement}_{dtPassPassBeginDate.Value.ToString("ddMMyyyy")}_{dtPassPassEndDate.Value.ToString("ddMMyyyy")}_{DateTime.Now.ToString("ddMMyyyyHHmmss")}.xlsx";
+                        outputProcName = "cptt.pkg$trep_reports.fillReportVehicleExcel";
+                        parameters = new[]
+                        {
+                            new OracleParameter()
+                            {
+                                ParameterName = "pIdVehicle", OracleDbType = OracleDbType.Int64, Value = idElement
+                            }
+                        }.Concat(GetOracleParameters(type)).ToArray();
+                        break;
                     case ReportType.Organisation:
                     
 
                     case ReportType.TransportCard:
-                    case ReportType.TransportVehicle:
+                    
                     case ReportType.None:
                     default:
                         return false;
@@ -274,25 +309,16 @@ namespace TransportReports
 
         private void SetDefaultValues()
         {
-            //Отчет инвестора-оператора
             dtActivePassActivationBeginDate.Value = new DateTime(DateTime.Now.AddMonths(-2).Year, DateTime.Now.AddMonths(-2).Month, 16);
-            
             dtActivePassActivationEndDate.Value = new DateTime(DateTime.Now.AddMonths(-1).Year, DateTime.Now.AddMonths(-1).Month, 15);
             dtActivePassPassBeginDate.Value = new DateTime(DateTime.Now.AddMonths(-1).Year, DateTime.Now.AddMonths(-1).Month, 1, 3, 0, 0);
             dtActivePassPassEndDate.Value = new DateTime(DateTime.Now.Year, DateTime.Now.Month, 1, 3, 0, 0);
-            //отчет по транзакциям
+
             dtPassPassBeginDate.Value = new DateTime(DateTime.Now.AddMonths(-1).Year, DateTime.Now.AddMonths(-1).Month, 1, 3, 0, 0);
             dtPassPassEndDate.Value = new DateTime(DateTime.Now.Year, DateTime.Now.Month, 1, 3, 0, 0);
-            /*
-            //Отчет инвестора-оператора
-            dtActivePassActivationBeginDate.Value = new DateTime(2016, 11, 13);
-            dtActivePassActivationEndDate.Value = new DateTime(2016, 12, 12);
-            dtActivePassPassBeginDate.Value = new DateTime(2016, 12, 1, 3, 0, 0);
-            dtActivePassPassEndDate.Value = new DateTime(2017, 1, 1, 3, 0, 0);
-            //отчет по транзакциям
-            dtPassPassBeginDate.Value = new DateTime(2016, 12, 1, 3, 0, 0);
-            dtPassPassEndDate.Value = new DateTime(2017, 1, 1, 3, 0, 0);
-            */
+
+            dtActiveActivationBeginDate.Value = new DateTime(DateTime.Now.AddMonths(-2).Year, DateTime.Now.AddMonths(-2).Month, 16);
+            dtActiveActivationEndDate.Value = new DateTime(DateTime.Now.AddMonths(-1).Year, DateTime.Now.AddMonths(-1).Month, 15);
         }
 
         private void ShowTab(ReportType type)
@@ -303,18 +329,19 @@ namespace TransportReports
                 case ReportType.ActivePass:
                 case ReportType.ActivePassRegional:
                 case ReportType.Privilege:
+                case ReportType.ActiveAgents:
                     tp = tpActivePass;
                     break;
                 case ReportType.Transaction:
                 case ReportType.Route:
+                case ReportType.Terminal:
                     tp = tpPass;
                     break;
-                case ReportType.Terminal:
+                case ReportType.TransportVehicle:
                     tp = tpPass;
                     break;
                 case ReportType.Organisation:
                 case ReportType.TransportCard:
-                case ReportType.TransportVehicle:
                 case ReportType.None:
                 default:
                     tp = tpEmpty;
@@ -353,6 +380,7 @@ namespace TransportReports
                 case ReportType.ActivePass:
                 case ReportType.ActivePassRegional:
                 case ReportType.Privilege:
+                case ReportType.ActiveAgents:
                     return new[]
                     {
                         new OracleParameter
@@ -375,6 +403,7 @@ namespace TransportReports
                 case ReportType.Route:
                 case ReportType.Transaction:
                 case ReportType.Terminal:
+                case ReportType.TransportVehicle:
                     return new[]
                     {
                         new OracleParameter
@@ -388,7 +417,6 @@ namespace TransportReports
                     };
                 case ReportType.Organisation:
                 case ReportType.TransportCard:
-                case ReportType.TransportVehicle:
                 case ReportType.None:
                 default:
                     return new OracleParameter[] {};

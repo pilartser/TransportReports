@@ -34,6 +34,8 @@
             this.tvReports = new System.Windows.Forms.TreeView();
             this.chbOpenExcelReport = new System.Windows.Forms.CheckBox();
             this.chbColorizeExcelReport = new System.Windows.Forms.CheckBox();
+            this.pnlButtons = new System.Windows.Forms.Panel();
+            this.btnSetAgents = new System.Windows.Forms.Button();
             this.tcReportParams = new System.Windows.Forms.TabControl();
             this.tpActivePass = new System.Windows.Forms.TabPage();
             this.gbActivePassActivation = new System.Windows.Forms.GroupBox();
@@ -46,7 +48,7 @@
             this.dtActivePassPassEndDate = new System.Windows.Forms.DateTimePicker();
             this.lbActivePassPassEndDate = new System.Windows.Forms.Label();
             this.dtActivePassPassBeginDate = new System.Windows.Forms.DateTimePicker();
-            this.tpPrivilege = new System.Windows.Forms.TabPage();
+            this.tpActive = new System.Windows.Forms.TabPage();
             this.tpTransportVehicle = new System.Windows.Forms.TabPage();
             this.tpTransportCard = new System.Windows.Forms.TabPage();
             this.tpPass = new System.Windows.Forms.TabPage();
@@ -61,8 +63,11 @@
             this.tpEmpty = new System.Windows.Forms.TabPage();
             this.ssUserInfo = new System.Windows.Forms.StatusStrip();
             this.tsslUserInfoText = new System.Windows.Forms.ToolStripStatusLabel();
-            this.pnlButtons = new System.Windows.Forms.Panel();
-            this.btnSetAgents = new System.Windows.Forms.Button();
+            this.gbActiveActivation = new System.Windows.Forms.GroupBox();
+            this.lbActiveActivationBeginDate = new System.Windows.Forms.Label();
+            this.dtActiveActivationBeginDate = new System.Windows.Forms.DateTimePicker();
+            this.lbActiveActvationEndDate = new System.Windows.Forms.Label();
+            this.dtActiveActivationEndDate = new System.Windows.Forms.DateTimePicker();
             ((System.ComponentModel.ISupportInitialize)(this.scReportListReportParam)).BeginInit();
             this.scReportListReportParam.Panel1.SuspendLayout();
             this.scReportListReportParam.Panel2.SuspendLayout();
@@ -71,14 +76,16 @@
             this.scReportListRunParam.Panel1.SuspendLayout();
             this.scReportListRunParam.Panel2.SuspendLayout();
             this.scReportListRunParam.SuspendLayout();
+            this.pnlButtons.SuspendLayout();
             this.tcReportParams.SuspendLayout();
             this.tpActivePass.SuspendLayout();
             this.gbActivePassActivation.SuspendLayout();
             this.gbActivePassPass.SuspendLayout();
+            this.tpActive.SuspendLayout();
             this.tpPass.SuspendLayout();
             this.gbPass.SuspendLayout();
             this.ssUserInfo.SuspendLayout();
-            this.pnlButtons.SuspendLayout();
+            this.gbActiveActivation.SuspendLayout();
             this.SuspendLayout();
             // 
             // btnRun
@@ -166,14 +173,35 @@
             this.chbColorizeExcelReport.Text = "Раскрашивать выгружаемые отчеты цветом";
             this.chbColorizeExcelReport.UseVisualStyleBackColor = true;
             // 
+            // pnlButtons
+            // 
+            this.pnlButtons.Controls.Add(this.btnRun);
+            this.pnlButtons.Controls.Add(this.btnSetAgents);
+            this.pnlButtons.Dock = System.Windows.Forms.DockStyle.Bottom;
+            this.pnlButtons.Location = new System.Drawing.Point(0, 82);
+            this.pnlButtons.Name = "pnlButtons";
+            this.pnlButtons.Size = new System.Drawing.Size(497, 26);
+            this.pnlButtons.TabIndex = 3;
+            // 
+            // btnSetAgents
+            // 
+            this.btnSetAgents.Dock = System.Windows.Forms.DockStyle.Left;
+            this.btnSetAgents.Location = new System.Drawing.Point(0, 0);
+            this.btnSetAgents.Name = "btnSetAgents";
+            this.btnSetAgents.Size = new System.Drawing.Size(178, 26);
+            this.btnSetAgents.TabIndex = 1;
+            this.btnSetAgents.Text = "Заблокировать агентов";
+            this.btnSetAgents.UseVisualStyleBackColor = true;
+            this.btnSetAgents.Click += new System.EventHandler(this.btnSetAgents_Click);
+            // 
             // tcReportParams
             // 
             this.tcReportParams.Appearance = System.Windows.Forms.TabAppearance.FlatButtons;
             this.tcReportParams.Controls.Add(this.tpActivePass);
-            this.tcReportParams.Controls.Add(this.tpPrivilege);
+            this.tcReportParams.Controls.Add(this.tpActive);
+            this.tcReportParams.Controls.Add(this.tpPass);
             this.tcReportParams.Controls.Add(this.tpTransportVehicle);
             this.tcReportParams.Controls.Add(this.tpTransportCard);
-            this.tcReportParams.Controls.Add(this.tpPass);
             this.tcReportParams.Controls.Add(this.tpOrganisation);
             this.tcReportParams.Controls.Add(this.tpRoute);
             this.tcReportParams.Controls.Add(this.tpTerminal);
@@ -301,14 +329,15 @@
             this.dtActivePassPassBeginDate.Size = new System.Drawing.Size(200, 20);
             this.dtActivePassPassBeginDate.TabIndex = 5;
             // 
-            // tpPrivilege
+            // tpActive
             // 
-            this.tpPrivilege.Location = new System.Drawing.Point(4, 5);
-            this.tpPrivilege.Name = "tpPrivilege";
-            this.tpPrivilege.Padding = new System.Windows.Forms.Padding(3);
-            this.tpPrivilege.Size = new System.Drawing.Size(364, 373);
-            this.tpPrivilege.TabIndex = 1;
-            this.tpPrivilege.UseVisualStyleBackColor = true;
+            this.tpActive.Controls.Add(this.gbActiveActivation);
+            this.tpActive.Location = new System.Drawing.Point(4, 5);
+            this.tpActive.Name = "tpActive";
+            this.tpActive.Padding = new System.Windows.Forms.Padding(3);
+            this.tpActive.Size = new System.Drawing.Size(364, 373);
+            this.tpActive.TabIndex = 1;
+            this.tpActive.UseVisualStyleBackColor = true;
             // 
             // tpTransportVehicle
             // 
@@ -443,26 +472,55 @@
             this.tsslUserInfoText.Name = "tsslUserInfoText";
             this.tsslUserInfoText.Size = new System.Drawing.Size(0, 17);
             // 
-            // pnlButtons
+            // gbActiveActivation
             // 
-            this.pnlButtons.Controls.Add(this.btnRun);
-            this.pnlButtons.Controls.Add(this.btnSetAgents);
-            this.pnlButtons.Dock = System.Windows.Forms.DockStyle.Bottom;
-            this.pnlButtons.Location = new System.Drawing.Point(0, 82);
-            this.pnlButtons.Name = "pnlButtons";
-            this.pnlButtons.Size = new System.Drawing.Size(497, 26);
-            this.pnlButtons.TabIndex = 3;
+            this.gbActiveActivation.Controls.Add(this.lbActiveActivationBeginDate);
+            this.gbActiveActivation.Controls.Add(this.dtActiveActivationBeginDate);
+            this.gbActiveActivation.Controls.Add(this.lbActiveActvationEndDate);
+            this.gbActiveActivation.Controls.Add(this.dtActiveActivationEndDate);
+            this.gbActiveActivation.Location = new System.Drawing.Point(12, 15);
+            this.gbActiveActivation.Margin = new System.Windows.Forms.Padding(9, 15, 3, 3);
+            this.gbActiveActivation.Name = "gbActiveActivation";
+            this.gbActiveActivation.Size = new System.Drawing.Size(284, 132);
+            this.gbActiveActivation.TabIndex = 2;
+            this.gbActiveActivation.TabStop = false;
+            this.gbActiveActivation.Text = "Активация карты (включительно)";
             // 
-            // btnSetAgents
+            // lbActiveActivationBeginDate
             // 
-            this.btnSetAgents.Dock = System.Windows.Forms.DockStyle.Left;
-            this.btnSetAgents.Location = new System.Drawing.Point(0, 0);
-            this.btnSetAgents.Name = "btnSetAgents";
-            this.btnSetAgents.Size = new System.Drawing.Size(178, 26);
-            this.btnSetAgents.TabIndex = 1;
-            this.btnSetAgents.Text = "Заблокировать агентов";
-            this.btnSetAgents.UseVisualStyleBackColor = true;
-            this.btnSetAgents.Click += new System.EventHandler(this.btnSetAgents_Click);
+            this.lbActiveActivationBeginDate.AutoSize = true;
+            this.lbActiveActivationBeginDate.Location = new System.Drawing.Point(6, 26);
+            this.lbActiveActivationBeginDate.Name = "lbActiveActivationBeginDate";
+            this.lbActiveActivationBeginDate.Size = new System.Drawing.Size(130, 13);
+            this.lbActiveActivationBeginDate.TabIndex = 6;
+            this.lbActiveActivationBeginDate.Text = "Дата начала активации:";
+            // 
+            // dtActiveActivationBeginDate
+            // 
+            this.dtActiveActivationBeginDate.CustomFormat = "dd.MM.yyyy HH:mm:ss";
+            this.dtActiveActivationBeginDate.Format = System.Windows.Forms.DateTimePickerFormat.Short;
+            this.dtActiveActivationBeginDate.Location = new System.Drawing.Point(9, 46);
+            this.dtActiveActivationBeginDate.Name = "dtActiveActivationBeginDate";
+            this.dtActiveActivationBeginDate.Size = new System.Drawing.Size(200, 20);
+            this.dtActiveActivationBeginDate.TabIndex = 3;
+            // 
+            // lbActiveActvationEndDate
+            // 
+            this.lbActiveActvationEndDate.AutoSize = true;
+            this.lbActiveActvationEndDate.Location = new System.Drawing.Point(6, 76);
+            this.lbActiveActvationEndDate.Name = "lbActiveActvationEndDate";
+            this.lbActiveActvationEndDate.Size = new System.Drawing.Size(148, 13);
+            this.lbActiveActvationEndDate.TabIndex = 7;
+            this.lbActiveActvationEndDate.Text = "Дата окончания активации:";
+            // 
+            // dtActiveActivationEndDate
+            // 
+            this.dtActiveActivationEndDate.CustomFormat = "dd.MM.yyyy HH:mm:ss";
+            this.dtActiveActivationEndDate.Format = System.Windows.Forms.DateTimePickerFormat.Short;
+            this.dtActiveActivationEndDate.Location = new System.Drawing.Point(9, 96);
+            this.dtActiveActivationEndDate.Name = "dtActiveActivationEndDate";
+            this.dtActiveActivationEndDate.Size = new System.Drawing.Size(200, 20);
+            this.dtActiveActivationEndDate.TabIndex = 4;
             // 
             // Main
             // 
@@ -486,18 +544,21 @@
             this.scReportListRunParam.Panel2.PerformLayout();
             ((System.ComponentModel.ISupportInitialize)(this.scReportListRunParam)).EndInit();
             this.scReportListRunParam.ResumeLayout(false);
+            this.pnlButtons.ResumeLayout(false);
             this.tcReportParams.ResumeLayout(false);
             this.tpActivePass.ResumeLayout(false);
             this.gbActivePassActivation.ResumeLayout(false);
             this.gbActivePassActivation.PerformLayout();
             this.gbActivePassPass.ResumeLayout(false);
             this.gbActivePassPass.PerformLayout();
+            this.tpActive.ResumeLayout(false);
             this.tpPass.ResumeLayout(false);
             this.gbPass.ResumeLayout(false);
             this.gbPass.PerformLayout();
             this.ssUserInfo.ResumeLayout(false);
             this.ssUserInfo.PerformLayout();
-            this.pnlButtons.ResumeLayout(false);
+            this.gbActiveActivation.ResumeLayout(false);
+            this.gbActiveActivation.PerformLayout();
             this.ResumeLayout(false);
             this.PerformLayout();
 
@@ -520,7 +581,7 @@
         private System.Windows.Forms.DateTimePicker dtActivePassPassEndDate;
         private System.Windows.Forms.Label lbActivePassPassEndDate;
         private System.Windows.Forms.DateTimePicker dtActivePassPassBeginDate;
-        private System.Windows.Forms.TabPage tpPrivilege;
+        private System.Windows.Forms.TabPage tpActive;
         private System.Windows.Forms.TabPage tpRoute;
         private System.Windows.Forms.TabPage tpOrganisation;
         private System.Windows.Forms.TabPage tpTerminal;
@@ -540,5 +601,10 @@
         private System.Windows.Forms.ToolStripStatusLabel tsslUserInfoText;
         private System.Windows.Forms.Panel pnlButtons;
         private System.Windows.Forms.Button btnSetAgents;
+        private System.Windows.Forms.GroupBox gbActiveActivation;
+        private System.Windows.Forms.Label lbActiveActivationBeginDate;
+        private System.Windows.Forms.DateTimePicker dtActiveActivationBeginDate;
+        private System.Windows.Forms.Label lbActiveActvationEndDate;
+        private System.Windows.Forms.DateTimePicker dtActiveActivationEndDate;
     }
 }

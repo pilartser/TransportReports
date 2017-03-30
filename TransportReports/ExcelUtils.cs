@@ -164,8 +164,8 @@ namespace TransportReports
                                 fill.PatternType = ExcelFillStyle.Solid;
                                 fill.BackgroundColor.SetColor(Color.Yellow);
                             }
-                            float cellFloatValue;
-                            if (float.TryParse(cellValue, out cellFloatValue))
+                            decimal cellFloatValue;
+                            if (decimal.TryParse(cellValue, out cellFloatValue))
                                 er.Value = cellFloatValue;
                             else
                                 er.Value = cellValue;
