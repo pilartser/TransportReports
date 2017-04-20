@@ -120,5 +120,20 @@ namespace TransportReports
                 return null;
             }
         }
+
+        public static OracleDataReader GetReader(OracleConnection conn, string query, OracleParameter[] param)
+        {
+            try
+            {
+                var cmd = GetCommand(conn, query, param);
+                cmd.CommandType = CommandType.Text;
+                return cmd.ExecuteReader();
+            }
+            catch (Exception e)
+            {
+                MessageBox.Show($"Ошибка получения курсора:\r\n {e.Message}");
+                return null;
+            }
+        }
     }
 }

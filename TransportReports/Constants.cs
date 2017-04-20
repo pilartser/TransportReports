@@ -19,7 +19,8 @@ namespace TransportReports
                      range,
                      font_size,
                      border,
-                     is_merged
+                     is_merged,
+                     is_colored
             FROM cptt.tmp$trep_report_excel_format
             ORDER BY list_num";
 
@@ -56,6 +57,20 @@ namespace TransportReports
             AND v.code NOT IN (':')
             AND EXISTS
              (SELECT 1 FROM cptt.tmp$trep_data td WHERE td.id_vehicle = v.id)";
+
+        public static readonly string ConstGetTransportCardList =
+            @"SELECT DISTINCT card_num as id_element,
+                              cptt.num_to_ean(card_num) as name_element
+            FROM cptt.t_data   trans,
+                 cptt.division div
+            WHERE trans.kind IN (7, 8, 10, 11, 12, 13, 37) --активация
+            AND trans.d = 0 -- не удален
+            AND trunc(trans.date_of) >= :pActivationBeginDate
+            AND trunc(trans.date_of) <= :pActivationEndDate
+            AND trans.id_division = div.id
+            AND div.id_operator NOT IN(SELECT id FROM cptt.ref$trep_agents_locked)
+            --AND card_num IN ('0020025798', '0150004801', '0150004292')
+            ";
 
         public static string ConstGetLockedAgentsList =
             @"SELECT op.id,

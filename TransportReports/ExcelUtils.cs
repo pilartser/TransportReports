@@ -133,6 +133,8 @@ namespace TransportReports
                                     er.Style.Border.Bottom.Style = er.Style.Border.Left.Style = ExcelBorderStyle.Thin;
                         if ("Y".Equals(Routines.GetString(row["is_merged"])))
                             er.Merge = true;
+                        if ("Y".Equals(Routines.GetString(row["is_colored"])))
+                            er.Style.Font.Color.SetColor(Color.Red); 
                     }
 
                     foreach (DataRow row in dtRows.Rows)
@@ -166,7 +168,10 @@ namespace TransportReports
                             }
                             decimal cellFloatValue;
                             if (decimal.TryParse(cellValue, out cellFloatValue))
+                            {
                                 er.Value = cellFloatValue;
+                                //er.AutoFitColumns();
+                            }
                             else
                                 er.Value = cellValue;
                         }
@@ -176,6 +181,7 @@ namespace TransportReports
                     pack.Save();
                     pack.Dispose();
                 }
+
                 if (!isOpenAfterCreate) return;
                 Excel.Application createdExcel = new Excel.Application {Visible = false};
                 createdExcel.Workbooks.Open(pathOutput);

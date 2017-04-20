@@ -49,25 +49,25 @@
             this.lbActivePassPassEndDate = new System.Windows.Forms.Label();
             this.dtActivePassPassBeginDate = new System.Windows.Forms.DateTimePicker();
             this.tpActive = new System.Windows.Forms.TabPage();
-            this.tpTransportVehicle = new System.Windows.Forms.TabPage();
-            this.tpTransportCard = new System.Windows.Forms.TabPage();
+            this.gbActiveActivation = new System.Windows.Forms.GroupBox();
+            this.lbActiveActivationBeginDate = new System.Windows.Forms.Label();
+            this.dtActiveActivationBeginDate = new System.Windows.Forms.DateTimePicker();
+            this.lbActiveActvationEndDate = new System.Windows.Forms.Label();
+            this.dtActiveActivationEndDate = new System.Windows.Forms.DateTimePicker();
             this.tpPass = new System.Windows.Forms.TabPage();
             this.gbPass = new System.Windows.Forms.GroupBox();
             this.lbPassPassBeginDate = new System.Windows.Forms.Label();
             this.dtPassPassBeginDate = new System.Windows.Forms.DateTimePicker();
             this.lbPassPassEndDate = new System.Windows.Forms.Label();
             this.dtPassPassEndDate = new System.Windows.Forms.DateTimePicker();
+            this.tpTransportVehicle = new System.Windows.Forms.TabPage();
+            this.tpTransportCard = new System.Windows.Forms.TabPage();
             this.tpOrganisation = new System.Windows.Forms.TabPage();
             this.tpRoute = new System.Windows.Forms.TabPage();
             this.tpTerminal = new System.Windows.Forms.TabPage();
             this.tpEmpty = new System.Windows.Forms.TabPage();
             this.ssUserInfo = new System.Windows.Forms.StatusStrip();
             this.tsslUserInfoText = new System.Windows.Forms.ToolStripStatusLabel();
-            this.gbActiveActivation = new System.Windows.Forms.GroupBox();
-            this.lbActiveActivationBeginDate = new System.Windows.Forms.Label();
-            this.dtActiveActivationBeginDate = new System.Windows.Forms.DateTimePicker();
-            this.lbActiveActvationEndDate = new System.Windows.Forms.Label();
-            this.dtActiveActivationEndDate = new System.Windows.Forms.DateTimePicker();
             ((System.ComponentModel.ISupportInitialize)(this.scReportListReportParam)).BeginInit();
             this.scReportListReportParam.Panel1.SuspendLayout();
             this.scReportListReportParam.Panel2.SuspendLayout();
@@ -82,10 +82,10 @@
             this.gbActivePassActivation.SuspendLayout();
             this.gbActivePassPass.SuspendLayout();
             this.tpActive.SuspendLayout();
+            this.gbActiveActivation.SuspendLayout();
             this.tpPass.SuspendLayout();
             this.gbPass.SuspendLayout();
             this.ssUserInfo.SuspendLayout();
-            this.gbActiveActivation.SuspendLayout();
             this.SuspendLayout();
             // 
             // btnRun
@@ -339,23 +339,55 @@
             this.tpActive.TabIndex = 1;
             this.tpActive.UseVisualStyleBackColor = true;
             // 
-            // tpTransportVehicle
+            // gbActiveActivation
             // 
-            this.tpTransportVehicle.Location = new System.Drawing.Point(4, 5);
-            this.tpTransportVehicle.Name = "tpTransportVehicle";
-            this.tpTransportVehicle.Padding = new System.Windows.Forms.Padding(3);
-            this.tpTransportVehicle.Size = new System.Drawing.Size(364, 373);
-            this.tpTransportVehicle.TabIndex = 2;
-            this.tpTransportVehicle.UseVisualStyleBackColor = true;
+            this.gbActiveActivation.Controls.Add(this.lbActiveActivationBeginDate);
+            this.gbActiveActivation.Controls.Add(this.dtActiveActivationBeginDate);
+            this.gbActiveActivation.Controls.Add(this.lbActiveActvationEndDate);
+            this.gbActiveActivation.Controls.Add(this.dtActiveActivationEndDate);
+            this.gbActiveActivation.Location = new System.Drawing.Point(12, 15);
+            this.gbActiveActivation.Margin = new System.Windows.Forms.Padding(9, 15, 3, 3);
+            this.gbActiveActivation.Name = "gbActiveActivation";
+            this.gbActiveActivation.Size = new System.Drawing.Size(284, 132);
+            this.gbActiveActivation.TabIndex = 2;
+            this.gbActiveActivation.TabStop = false;
+            this.gbActiveActivation.Text = "Активация карты (включительно)";
             // 
-            // tpTransportCard
+            // lbActiveActivationBeginDate
             // 
-            this.tpTransportCard.Location = new System.Drawing.Point(4, 5);
-            this.tpTransportCard.Name = "tpTransportCard";
-            this.tpTransportCard.Padding = new System.Windows.Forms.Padding(3);
-            this.tpTransportCard.Size = new System.Drawing.Size(364, 373);
-            this.tpTransportCard.TabIndex = 3;
-            this.tpTransportCard.UseVisualStyleBackColor = true;
+            this.lbActiveActivationBeginDate.AutoSize = true;
+            this.lbActiveActivationBeginDate.Location = new System.Drawing.Point(6, 26);
+            this.lbActiveActivationBeginDate.Name = "lbActiveActivationBeginDate";
+            this.lbActiveActivationBeginDate.Size = new System.Drawing.Size(130, 13);
+            this.lbActiveActivationBeginDate.TabIndex = 6;
+            this.lbActiveActivationBeginDate.Text = "Дата начала активации:";
+            // 
+            // dtActiveActivationBeginDate
+            // 
+            this.dtActiveActivationBeginDate.CustomFormat = "dd.MM.yyyy HH:mm:ss";
+            this.dtActiveActivationBeginDate.Format = System.Windows.Forms.DateTimePickerFormat.Short;
+            this.dtActiveActivationBeginDate.Location = new System.Drawing.Point(9, 46);
+            this.dtActiveActivationBeginDate.Name = "dtActiveActivationBeginDate";
+            this.dtActiveActivationBeginDate.Size = new System.Drawing.Size(200, 20);
+            this.dtActiveActivationBeginDate.TabIndex = 3;
+            // 
+            // lbActiveActvationEndDate
+            // 
+            this.lbActiveActvationEndDate.AutoSize = true;
+            this.lbActiveActvationEndDate.Location = new System.Drawing.Point(6, 76);
+            this.lbActiveActvationEndDate.Name = "lbActiveActvationEndDate";
+            this.lbActiveActvationEndDate.Size = new System.Drawing.Size(148, 13);
+            this.lbActiveActvationEndDate.TabIndex = 7;
+            this.lbActiveActvationEndDate.Text = "Дата окончания активации:";
+            // 
+            // dtActiveActivationEndDate
+            // 
+            this.dtActiveActivationEndDate.CustomFormat = "dd.MM.yyyy HH:mm:ss";
+            this.dtActiveActivationEndDate.Format = System.Windows.Forms.DateTimePickerFormat.Short;
+            this.dtActiveActivationEndDate.Location = new System.Drawing.Point(9, 96);
+            this.dtActiveActivationEndDate.Name = "dtActiveActivationEndDate";
+            this.dtActiveActivationEndDate.Size = new System.Drawing.Size(200, 20);
+            this.dtActiveActivationEndDate.TabIndex = 4;
             // 
             // tpPass
             // 
@@ -417,6 +449,24 @@
             this.dtPassPassEndDate.Size = new System.Drawing.Size(200, 20);
             this.dtPassPassEndDate.TabIndex = 6;
             // 
+            // tpTransportVehicle
+            // 
+            this.tpTransportVehicle.Location = new System.Drawing.Point(4, 5);
+            this.tpTransportVehicle.Name = "tpTransportVehicle";
+            this.tpTransportVehicle.Padding = new System.Windows.Forms.Padding(3);
+            this.tpTransportVehicle.Size = new System.Drawing.Size(364, 373);
+            this.tpTransportVehicle.TabIndex = 2;
+            this.tpTransportVehicle.UseVisualStyleBackColor = true;
+            // 
+            // tpTransportCard
+            // 
+            this.tpTransportCard.Location = new System.Drawing.Point(4, 5);
+            this.tpTransportCard.Name = "tpTransportCard";
+            this.tpTransportCard.Padding = new System.Windows.Forms.Padding(3);
+            this.tpTransportCard.Size = new System.Drawing.Size(364, 373);
+            this.tpTransportCard.TabIndex = 3;
+            this.tpTransportCard.UseVisualStyleBackColor = true;
+            // 
             // tpOrganisation
             // 
             this.tpOrganisation.Location = new System.Drawing.Point(4, 5);
@@ -472,56 +522,6 @@
             this.tsslUserInfoText.Name = "tsslUserInfoText";
             this.tsslUserInfoText.Size = new System.Drawing.Size(0, 17);
             // 
-            // gbActiveActivation
-            // 
-            this.gbActiveActivation.Controls.Add(this.lbActiveActivationBeginDate);
-            this.gbActiveActivation.Controls.Add(this.dtActiveActivationBeginDate);
-            this.gbActiveActivation.Controls.Add(this.lbActiveActvationEndDate);
-            this.gbActiveActivation.Controls.Add(this.dtActiveActivationEndDate);
-            this.gbActiveActivation.Location = new System.Drawing.Point(12, 15);
-            this.gbActiveActivation.Margin = new System.Windows.Forms.Padding(9, 15, 3, 3);
-            this.gbActiveActivation.Name = "gbActiveActivation";
-            this.gbActiveActivation.Size = new System.Drawing.Size(284, 132);
-            this.gbActiveActivation.TabIndex = 2;
-            this.gbActiveActivation.TabStop = false;
-            this.gbActiveActivation.Text = "Активация карты (включительно)";
-            // 
-            // lbActiveActivationBeginDate
-            // 
-            this.lbActiveActivationBeginDate.AutoSize = true;
-            this.lbActiveActivationBeginDate.Location = new System.Drawing.Point(6, 26);
-            this.lbActiveActivationBeginDate.Name = "lbActiveActivationBeginDate";
-            this.lbActiveActivationBeginDate.Size = new System.Drawing.Size(130, 13);
-            this.lbActiveActivationBeginDate.TabIndex = 6;
-            this.lbActiveActivationBeginDate.Text = "Дата начала активации:";
-            // 
-            // dtActiveActivationBeginDate
-            // 
-            this.dtActiveActivationBeginDate.CustomFormat = "dd.MM.yyyy HH:mm:ss";
-            this.dtActiveActivationBeginDate.Format = System.Windows.Forms.DateTimePickerFormat.Short;
-            this.dtActiveActivationBeginDate.Location = new System.Drawing.Point(9, 46);
-            this.dtActiveActivationBeginDate.Name = "dtActiveActivationBeginDate";
-            this.dtActiveActivationBeginDate.Size = new System.Drawing.Size(200, 20);
-            this.dtActiveActivationBeginDate.TabIndex = 3;
-            // 
-            // lbActiveActvationEndDate
-            // 
-            this.lbActiveActvationEndDate.AutoSize = true;
-            this.lbActiveActvationEndDate.Location = new System.Drawing.Point(6, 76);
-            this.lbActiveActvationEndDate.Name = "lbActiveActvationEndDate";
-            this.lbActiveActvationEndDate.Size = new System.Drawing.Size(148, 13);
-            this.lbActiveActvationEndDate.TabIndex = 7;
-            this.lbActiveActvationEndDate.Text = "Дата окончания активации:";
-            // 
-            // dtActiveActivationEndDate
-            // 
-            this.dtActiveActivationEndDate.CustomFormat = "dd.MM.yyyy HH:mm:ss";
-            this.dtActiveActivationEndDate.Format = System.Windows.Forms.DateTimePickerFormat.Short;
-            this.dtActiveActivationEndDate.Location = new System.Drawing.Point(9, 96);
-            this.dtActiveActivationEndDate.Name = "dtActiveActivationEndDate";
-            this.dtActiveActivationEndDate.Size = new System.Drawing.Size(200, 20);
-            this.dtActiveActivationEndDate.TabIndex = 4;
-            // 
             // Main
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
@@ -552,13 +552,13 @@
             this.gbActivePassPass.ResumeLayout(false);
             this.gbActivePassPass.PerformLayout();
             this.tpActive.ResumeLayout(false);
+            this.gbActiveActivation.ResumeLayout(false);
+            this.gbActiveActivation.PerformLayout();
             this.tpPass.ResumeLayout(false);
             this.gbPass.ResumeLayout(false);
             this.gbPass.PerformLayout();
             this.ssUserInfo.ResumeLayout(false);
             this.ssUserInfo.PerformLayout();
-            this.gbActiveActivation.ResumeLayout(false);
-            this.gbActiveActivation.PerformLayout();
             this.ResumeLayout(false);
             this.PerformLayout();
 

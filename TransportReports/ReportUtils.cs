@@ -18,7 +18,7 @@ namespace TransportReports
                 new ReportTreeNode("Отчет по организации", ReportType.Organisation, Color.DarkRed),
                 new ReportTreeNode("Отчет по терминалу кондуктора", ReportType.Terminal, Color.DarkGreen),
                 new ReportTreeNode("Отчет по транзакциям", ReportType.Transaction, Color.DarkGreen),
-                new ReportTreeNode("Отчет по транспортной карте", ReportType.TransportCard, Color.DarkRed),
+                new ReportTreeNode("Отчет по транспортной карте", ReportType.TransportCard, Color.DarkGreen),
                 new ReportTreeNode("Отчет по транспортному средству", ReportType.TransportVehicle, Color.DarkGreen)
             });
             root.Expand();
@@ -37,6 +37,8 @@ namespace TransportReports
                     return Constants.ConstGetTermList;
                 case ReportType.TransportVehicle:
                     return Constants.ConstGetTransportVehicleList;
+                case ReportType.TransportCard:
+                    return Constants.ConstGetTransportCardList;
                 default:
                     return "";
             }
