@@ -98,7 +98,7 @@ namespace TransportReports
                 if (!CalcData(type)) return;
                 SetStatusText("Идет подготовка к выгрузке файлов.");
                 
-                if (new [] { ReportType.Route, ReportType.Terminal, ReportType.TransportVehicle, ReportType.TransportCard }.Contains(type))
+                if (new [] { ReportType.Route, ReportType.Terminal, ReportType.TransportVehicle, ReportType.TransportCard, ReportType.Organisation }.Contains(type))
                 {
                     var query = ReportUtils.GetReaderQuery(type);
                     var reader = (type == ReportType.TransportCard)
@@ -199,6 +199,7 @@ namespace TransportReports
                 case ReportType.Terminal:
                 case ReportType.TransportVehicle:
                 case ReportType.TransportCard:
+                
                     return DatabaseUtils.CallProcedure(_connection, "cptt.pkg$trep_reports.filldata",
                         GetOracleParameters(type).Where(p => ((p.ParameterName == "pPassBeginDate")||(p.ParameterName == "pPassEndDate"))).ToArray());
                 case ReportType.ActiveAgents:
@@ -218,10 +219,37 @@ namespace TransportReports
                                 Value = dtActivePassActivationEndDate.Value
                             }
                         });
+
+                case ReportType.Organisation:
+                    return DatabaseUtils.CallProcedure(_connection,
+                        "cptt.pkg$trep_reports.fillActivationSeriesPrivilege",
+                        GetOracleParameters(type)
+                            .Where(
+                                p =>
+                                    ((p.ParameterName == "pActivationBeginDate") ||
+                                     (p.ParameterName == "pActivationEndDate")))
+                            .Concat(new[]
+                            {
+                                new OracleParameter()
+                                {
+                                    ParameterName = "pAllPrivilege",
+                                    OracleDbType = OracleDbType.Varchar2,
+                                    Value = "Y"
+                                }
+                            })
+                            .ToArray())
+                           &&
+                           DatabaseUtils.CallProcedure(_connection,
+                               "cptt.pkg$trep_reports.fillPassSeriesPrivilegeCarrier",
+                               GetOracleParameters(type)
+                                   .Where(
+                                       p =>
+                                           ((p.ParameterName == "pPassBeginDate") || (p.ParameterName == "pPassEndDate")))
+                                   .ToArray());
                 case ReportType.ActivePass:
                 case ReportType.ActivePassRegional:
                 case ReportType.Privilege:
-                case ReportType.Organisation:
+                
                 
                 case ReportType.Transaction:
                 
@@ -324,9 +352,23 @@ namespace TransportReports
                         }.Concat(GetOracleParameters(type)).ToArray();
                         break;
                     case ReportType.Organisation:
-                    
-
-                    
+                        templateName = "Organisation.xltx";
+                        outputName = $@"Отчет по организации_{nameElement}_{dtPassPassBeginDate.Value.ToString("ddMMyyyy")}_{dtPassPassEndDate.Value.ToString("ddMMyyyy")}_{DateTime.Now.ToString("ddMMyyyyHHmmss")}.xlsx";
+                        outputProcName = "cptt.pkg$trep_reports.fillReportOrganisationExcel";
+                        parameters =
+                            new[]
+                            {
+                                new OracleParameter()
+                                {
+                                    ParameterName = "pIdCarrier",
+                                    OracleDbType = OracleDbType.Int64,
+                                    Value = idElement
+                                }
+                            }.Concat(GetOracleParameters(type).Where(
+                                p =>
+                                    ((p.ParameterName == "pPassBeginDate") || (p.ParameterName == "pPassEndDate"))))
+                                .ToArray();
+                        break;
                     case ReportType.None:
                     default:
                         return false;
@@ -382,17 +424,18 @@ namespace TransportReports
                 case ReportType.Privilege:
                 case ReportType.ActiveAgents:
                 case ReportType.TransportCard:
+                case ReportType.Organisation:
                     tp = tpActivePass;
                     break;
                 case ReportType.Transaction:
                 case ReportType.Route:
                 case ReportType.Terminal:
+                
                     tp = tpPass;
                     break;
                 case ReportType.TransportVehicle:
                     tp = tpPass;
                     break;
-                case ReportType.Organisation:
                 case ReportType.None:
                 default:
                     tp = tpEmpty;
@@ -433,6 +476,7 @@ namespace TransportReports
                 case ReportType.Privilege:
                 case ReportType.ActiveAgents:
                 case ReportType.TransportCard:
+                case ReportType.Organisation:
                     return new[]
                     {
                         new OracleParameter
@@ -467,7 +511,6 @@ namespace TransportReports
                             ParameterName = "pPassEndDate", OracleDbType = OracleDbType.Date, Value = dtPassPassEndDate.Value
                         },
                     };
-                case ReportType.Organisation:
                 case ReportType.None:
                 default:
                     return new OracleParameter[] {};

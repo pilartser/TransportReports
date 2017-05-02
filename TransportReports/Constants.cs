@@ -72,6 +72,13 @@ namespace TransportReports
             --AND card_num IN ('0020025798', '0150004801', '0150004292')
             ";
 
+        public static readonly string ConstGetOrganisationList =
+            @"SELECT DISTINCT id_operator AS id_element,
+                              op.name     AS name_element
+                FROM cptt.TMP$TREP_PASS_SERIESPRIVOP spo,
+                     cptt.operator                   op
+                WHERE spo.id_operator = op.id";
+
         public static string ConstGetLockedAgentsList =
             @"SELECT op.id,
                    NAME,

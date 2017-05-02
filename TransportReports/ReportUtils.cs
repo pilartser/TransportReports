@@ -15,7 +15,7 @@ namespace TransportReports
                 new ReportTreeNode("Отчет по активации проездных агентами", ReportType.ActiveAgents, Color.DarkGreen), 
                 new ReportTreeNode("Отчет по льготникам", ReportType.Privilege, Color.DarkGreen),
                 new ReportTreeNode("Отчет по маршруту", ReportType.Route, Color.DarkGreen),
-                new ReportTreeNode("Отчет по организации", ReportType.Organisation, Color.DarkRed),
+                new ReportTreeNode("Отчет по организации", ReportType.Organisation, Color.DarkGreen),
                 new ReportTreeNode("Отчет по терминалу кондуктора", ReportType.Terminal, Color.DarkGreen),
                 new ReportTreeNode("Отчет по транзакциям", ReportType.Transaction, Color.DarkGreen),
                 new ReportTreeNode("Отчет по транспортной карте", ReportType.TransportCard, Color.DarkGreen),
@@ -39,6 +39,8 @@ namespace TransportReports
                     return Constants.ConstGetTransportVehicleList;
                 case ReportType.TransportCard:
                     return Constants.ConstGetTransportCardList;
+                case ReportType.Organisation:
+                    return Constants.ConstGetOrganisationList;
                 default:
                     return "";
             }
