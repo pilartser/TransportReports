@@ -282,7 +282,7 @@ namespace TransportReports
                         templateName = "ActivePass.xlsx";
                         outputName = $@"Отчет инвеcтора-оператора(развернутые региональные льготники)_{dtActivePassPassBeginDate.Value.ToString("ddMMyyyy")}_{dtActivePassPassEndDate.Value.ToString("ddMMyyyy")}_{DateTime.Now.ToString("ddMMyyyyHHmmss")}.xlsx";
                         outputProcName = "cptt.pkg$trep_reports.fillReportActivePassExcel";
-                        parameters = GetOracleParameters(type);
+                        parameters = GetOracleParameters(type).Concat(new [] {new OracleParameter() {ParameterName = "pIsRegionalPrivilegeSplitted", OracleDbType = OracleDbType.Varchar2, Value = "Y"}}).ToArray();
                         break;
                     case ReportType.ActiveAgents:
                         templateName = "ActiveAgents.xltx";
